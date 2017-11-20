@@ -1,4 +1,10 @@
 function Q = Gaussianrange(A,eps)
+% This function performs an adaptive randomized fixed-precision range finder to A
+% through a fixed-rank algorithm
+% Algorithm 4.2 in Halko et al. paper
+% Input: A: target matrix
+%        eps: precision desired that ||A-AQQ'|| \le eps
+% Output: Q: range matrix with property specified above
 [m,n]=size(A);
 r=10;
 w=normrnd(0,1,n,r);
