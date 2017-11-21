@@ -1,6 +1,9 @@
 function H = randH(m)
-% This function constructs another random matrix H to use together with SRFT
-% H = th1*perm1*z1*th2*perm2*z2 and compute T = SRFT*H
+% This function constructs a random matrix H to use together with SRFT,
+% usually when solving least-squares problems
+% H = th1*perm1*z1*th2*perm2*z2 and we can use T = SRFT*H
+% Input: m: the size of of the desired matrix H, which is m by m
+% Output: H: the desired matrix with formula shown above
 perm1=eye(m);
 perm2=eye(m);
 idx1=randperm(m);

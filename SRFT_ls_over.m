@@ -1,11 +1,17 @@
-function x = SRFT_ls_over(A,b,eps,k,srftmultback,conj_grad,randH)
-%% This algorithm solves overdetermined Least Squares Problem through SRFT
-% Set-up
-
-[m,n]=size(A);
-l=k+8;
+function x = SRFT_ls_over(A,b,eps,l,srftmultback,conj_grad,randH)
+% This algorithm solves overdetermined Least Squares Problem Ax=b with
+% A of size m by n and m >= n by means of SRFT
+% Input: A: target matrix
+%        b: target result vector
+%        eps: tolerance for conjugate gradient iterations
+%        l: parameter used in the algorithm m >= l > n
+%        srftmultback, conj_grad, randH: helper functions
+% Output: x: the solution to the overdetermined system
 
 %%
+% Set-up and construct random matrix
+[m,n]=size(A);
+
 H=randH(m);
 [~,T]=srftmultback(l,H);
 

@@ -1,18 +1,21 @@
-%% This algorithm finds SVD through SRFT by means of the interpolative decompostion
+function [U,S,V] = SRFT_svd(A,k,srftmultback)
+% This algorithm finds SVD through SRFT by means of the interpolative decompostion
+% Input: A: target m-by-n matrix
+%        k: the desired fixed low rank of A, k <= min(m,n)
+%        srftmultback: helper function
+% Output: The SVD of A, A=USV'
+%%
 % Set-up
-
-m = 30; % number of rows
-n = 40; % number of columns
-k = 5; % lower rank we wish to approximate
+[~,n]=size(A);
 l = k+8; % common choice of l
-A = rand(m,n); % A is the m*n target matrix we wish to find an approximation
 
 %%
 % Construct an interpolative decomposition of A, A = BP
 % Use a rank k ID decomposition algorithm instead (see reference)
 [~,Y] = srftmultback(l,A);
-[Qy,Ry,Py]=qr(Y);
-Qy1=Qy(:,1:k);
+% [Qy,Ry,Py]=qr(Y);
+% Qy1=Qy(:,1:k);
+[~,Ry,Py]=qr(Y);
 Ry1=Ry(1:k,:);
 Ry11=Ry1(:,1:k);
 Ry12=Ry1(:,k+1:n);

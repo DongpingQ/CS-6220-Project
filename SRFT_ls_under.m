@@ -1,11 +1,15 @@
-function x = SRFT_ls_under(A,b,eps,k,srftmultback,conj_grad,randH)
-%% This algorithm solves underdetermined Least Squares Problem through SRFT
+function x = SRFT_ls_under(A,b,eps,l,srftmultback,conj_grad,randH)
+% This algorithm solves underdetermined Least Squares Problem Ax=b with
+% A of size m by n and m < n by means of SRFT
+% Input: A: target matrix
+%        b: target result vector
+%        eps: tolerance for conjugate gradient iterations
+%        l: parameter used in the algorithm n >= l > m
+%        srftmultback, conj_grad, randH: helper functions
+% Output: x: the solution to the overdetermined system
+%%
 % Set-up
-
-si=size(A);
-m=si(1);
-n=si(2);
-l=k+8;
+[m,n]=size(A);
 
 %%
 % Construct another random matrix H to use together with SRFT

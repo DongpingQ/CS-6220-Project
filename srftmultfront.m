@@ -1,6 +1,10 @@
-function R = srftmultfront(k,A)
+function M = srftmultfront(k,A)
 % This function generates a n*l sized subsampled random Fourier transform
-% R=DFS and computes the matrix multiplication AR
+% R=DFS and computes the matrix multiplication AR, R is formatted this way
+% so that the matrix A is multiplied in the front
+% Input: k: a parameter specifying the column number of the SRFT matrix
+%        A: target matrix
+% Output: M: the product of A and R, M = A*R
 
 [~,n]=size(A);
 % Generate S
@@ -18,5 +22,5 @@ for j = 1:n
 end
 D=diag(d);
 
-R = fft(A*D)*S;
+M = fft(A*D)*S;
 end
