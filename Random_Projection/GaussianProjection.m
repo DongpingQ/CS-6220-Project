@@ -1,7 +1,7 @@
 function [C] = GaussianProjection(A, s)
 % This is the Gaussian Projection algorithm
 % ======================================
-% Input: A: matrix to be sketched
+% Input: A: matrix to be sketched, A is m by n
 %        s: S = G/sqrt(s), S is n by s
 %           G is sampled i.i.d. from N(0,1)
 % ======================================
