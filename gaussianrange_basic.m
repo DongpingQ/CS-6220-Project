@@ -8,7 +8,7 @@ function [Q,omega,Y] = gaussianrange_basic(A,l)
 %         Y: sample matrix Y=A*omega
 
 [~,n]=size(A);
-omega=normrnd(0,1,n,l);
+omega=randn(n,l)+1i*randn(n,l);
 Y=A*omega;
 [Q,~]=qr(Y);
 end

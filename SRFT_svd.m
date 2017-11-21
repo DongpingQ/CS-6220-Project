@@ -10,7 +10,7 @@ A = rand(m,n); % A is the m*n target matrix we wish to find an approximation
 %%
 % Construct an interpolative decomposition of A, A = BP
 % Use a rank k ID decomposition algorithm instead (see reference)
-Y = srftmult(m,l,A);
+[~,Y] = srftmultback(l,A);
 [Qy,Ry,Py]=qr(Y);
 Qy1=Qy(:,1:k);
 Ry1=Ry(1:k,:);

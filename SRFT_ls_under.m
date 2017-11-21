@@ -1,4 +1,4 @@
-function x = SRFT_ls_under(A,b,eps,k,srftmult,conj_grad,randH)
+function x = SRFT_ls_under(A,b,eps,k,srftmultback,conj_grad,randH)
 %% This algorithm solves underdetermined Least Squares Problem through SRFT
 % Set-up
 
@@ -11,7 +11,7 @@ l=k+8;
 % Construct another random matrix H to use together with SRFT
 % H = th1*perm1*z1*th2*perm2*z2 and compute T = SRFT*H
 H=randH(n);
-T=srftmult(n,l,H);
+[~,T]=srftmultback(l,H);
 
 %%
 % Least squares problem algorithm
@@ -20,6 +20,6 @@ S=T*A';
 t=R(1:m,1:m)'\b;
 z=Q(:,1:m)*t;
 c=T'*z;
-y=SRFT_ls_over(A',c,eps,k,srftmult,conj_grad);
+y=SRFT_ls_over(A',c,eps,k,srftmultback,conj_grad);
 x=A'*y;
 end

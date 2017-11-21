@@ -1,4 +1,4 @@
-function x = SRFT_ls_over(A,b,eps,k,srftmult,conj_grad,randH)
+function x = SRFT_ls_over(A,b,eps,k,srftmultback,conj_grad,randH)
 %% This algorithm solves overdetermined Least Squares Problem through SRFT
 % Set-up
 
@@ -7,7 +7,7 @@ l=k+8;
 
 %%
 H=randH(m);
-T=srftmult(m,l,H);
+[~,T]=srftmultback(l,H);
 
 %%
 % Least squares problem algorithm
