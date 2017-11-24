@@ -3,7 +3,6 @@ function [C] = CountSketch(A, s)
 % ======================================
 % Input: A: matrix to be sketched, A is m by n
 %        s: S = sparse(1,-1,p(1) = p(-1) = 0.5), S is n by s
-%           G is sampled i.i.d. from N(0,1)
 % ======================================
 
 [m, n] = size(A);

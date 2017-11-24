@@ -5,20 +5,9 @@ m = 50;    eps = 1.0e-1;
 
 s = floor(m/eps^2);
 
-n = [200 400 800 1600 3200];
+n = [200 400 800 1600 3200 6400];
 
 for i = 1:length(n)
-    
-%     S = eye(m,n(i));
-%     S = S(randperm(m),randperm(n(i)));
-%     T = eye(m,n(i));
-%     T = T(randperm(m),randperm(n(i)));
-%     
-%     for j = 1:m
-%         for k = 1:n
-%             A(j,k) = 10*rand*S(j,k) + 20*rand*T(j,k);
-%         end
-%     end
     
     A = 10*sin( rand(m, n(i)) );
     
@@ -43,20 +32,7 @@ for i = 1:length(n)
     X = A - C*Cinv*A;
 
     nF2(i) = norm(X,'fro');
-%     fprintf('Frobenius norm: ')
-%     disp(nF2(i))
 
-%     tic
-%     C = SRHT(A, s);
-%     t3(i) = toc;
-% 
-%     Cinv = pinv(C, eps);
-% 
-%     X = A - C*Cinv*A;
-% 
-%     nF3(i) = norm(X,'fro');
-%     fprintf('Frobenius norm: ')
-%     disp(nF2(i))
 end
 
 for i = 1:length(n)    I(i) = i;    end
