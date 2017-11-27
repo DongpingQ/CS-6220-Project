@@ -15,14 +15,7 @@ for i = k+1:r
    s(i) = 5*(2*k+1-i)/k + rand; 
 end
 
-U = get_orthonormal(m,r);
-
-V = get_orthonormal(n,r)';
-
-A = zeros(m,n);
-for i = 1:r
-    A = A + s(i)*U(:,i).*V(i,:);
-end
+U = get_othonormal()
 
 end
 
