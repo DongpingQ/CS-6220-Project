@@ -1,12 +1,17 @@
-function [xtilde] = LSRN(A, b, C)
-%UNTITLED7 Summary of this function goes here
-%   Detailed explanation goes here
+function [x] = LSRN(A, b, C, tol)
+% This is the LSRN algorithm
+% ======================================
+% Input: A: matrix to generate, A is m by n
+%        k: first k singular value is dominant  
+%        r: rank of A
+% ======================================
 
-Atilde = (A*C)';
-[U, S, V] = svd(Atilde);
-N = V\S;
-y = pinv(A*N)*b;
-xtilde = N*y;
+Y = (C'*A)';
+[Q, R] = qr(Y,0);
+% T = inv(R);
+Atilde = A/R;
+
+x = lsqr(Atilde, b, tol);
 
 end
 

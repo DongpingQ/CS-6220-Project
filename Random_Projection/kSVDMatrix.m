@@ -1,4 +1,4 @@
-function [A] = kSVDMatrix(m, n, k, r)
+function [A] = kSVDMatrix(m, n, r, k)
 % This is the k-SVD matrix generation algorithm
 % ======================================
 % Input: A: matrix to generate, A is m by n
@@ -8,11 +8,11 @@ function [A] = kSVDMatrix(m, n, k, r)
 
 s = zeros(r,1);
 for i = 1:k
-   s(i) = 10*(2*k+1-i)/k + rand; 
+   s(i) = 10*(2*k+1-i)/k; 
 end
 
 for i = k+1:r
-   s(i) = 5*(2*k+1-i)/k + rand; 
+   s(i) = 5*(2*r+1-i)/(r*(2*r-k)); 
 end
 
 U = get_orthonormal(m,r);
