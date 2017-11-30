@@ -12,7 +12,7 @@ for i = 1:k
 end
 
 for i = k+1:r
-   s(i) = 5*(2*r+1-i)/(r*(2*r-k)); 
+   s(i) = 5*(2*r+1-i)/(2*r-k); 
 end
 
 U = get_orthonormal(m,r);
