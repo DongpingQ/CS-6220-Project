@@ -8,6 +8,10 @@ function [Y,W,psi] = SRFT_sketch(A,k,l,srftmultfront,srftmultback)
 %         W: one sketch of A that W = psi*A, psi is another random matrix
 %         psi: the random matrix used to compute W
 
+[m,n]=size(A);
 Y=srftmultfront(k,A);
+Y=Y./sqrt(n);
 [psi,W]=srftmultback(l,A);
+psi=psi./sqrt(m);
+W=W./sqrt(m);
 end

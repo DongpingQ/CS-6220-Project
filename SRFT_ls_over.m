@@ -1,4 +1,4 @@
-function x = SRFT_ls_over(A,b,eps,l,srftmultback,conj_grad,randH)
+function x = SRFT_ls_over(A,b,eps,l,srftmult_ls,conj_grad,randH)
 % This algorithm solves overdetermined Least Squares Problem Ax=b with
 % A of size m by n and m >= n by means of SRFT
 % Input: A: target matrix
@@ -13,15 +13,14 @@ function x = SRFT_ls_over(A,b,eps,l,srftmultback,conj_grad,randH)
 [m,n]=size(A);
 
 H=randH(m);
-[~,T]=srftmultback(l,H);
+T=srftmult_ls(l,H);
 
 %%
 % Least squares problem algorithm
 E=T*A;
 [Q,R,Per]=qr(E,0);
 iden=eye(n);
-P=R*iden(:,Per);
+P=R*iden(Per,:);
 z=P\(Q'*(T*b));
-y=conj_grad(A,P,b,z,eps);
-x=P\y;
+x=conj_grad(A,P,b,z,eps);
 end

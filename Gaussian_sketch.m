@@ -9,6 +9,7 @@ function [Y,W,psi] = Gaussian_sketch(A,k,l)
 %         W: one sketch of A that W = psi*A, psi is another random matrix
 %         psi: the random matrix used to compute W
 
+[m,n]=size(A);
 omega=randn(n,k)+1i*randn(n,k);
 psi=randn(l,m)+1i*randn(l,m);
 Y=A*omega;

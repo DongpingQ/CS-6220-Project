@@ -1,4 +1,4 @@
-function x = SRFT_ls_under(A,b,eps,l,srftmultback,conj_grad,randH)
+function x = SRFT_ls_under(A,b,eps,l,srftmult_ls,conj_grad,randH,SRFT_ls_over)
 % This algorithm solves underdetermined Least Squares Problem Ax=b with
 % A of size m by n and m < n by means of SRFT
 % Input: A: target matrix
@@ -15,7 +15,7 @@ function x = SRFT_ls_under(A,b,eps,l,srftmultback,conj_grad,randH)
 % Construct another random matrix H to use together with SRFT
 % H = th1*perm1*z1*th2*perm2*z2 and compute T = SRFT*H
 H=randH(n);
-[~,T]=srftmultback(l,H);
+T=srftmult_ls(l,H);
 
 %%
 % Least squares problem algorithm
@@ -24,6 +24,6 @@ S=T*A';
 t=R(1:m,1:m)'\b;
 z=Q(:,1:m)*t;
 c=T'*z;
-y=SRFT_ls_over(A',c,eps,k,srftmultback,conj_grad);
+y=SRFT_ls_over(A',c,eps^2*l/(4*n),l,srftmult_ls,conj_grad,randH);
 x=A'*y;
 end
