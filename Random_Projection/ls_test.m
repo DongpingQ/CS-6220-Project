@@ -37,6 +37,7 @@ plot(I*t1(1), t1, '-o', I*t1(1), t2, '-*','LineWidth',1.5)
 xlabel('scaled size n')
 ylabel('time')
 legend('Gaussian','CountSketch')
+title('least square run time')
 axis image
 
 figure(2)
@@ -44,5 +45,6 @@ plot(I, log10(nF1), I, log10(nF2), '-*','LineWidth',1.5)
 xlabel('size n')
 ylabel('log(error)')
 legend('Gaussian','CountSketch')
+title('least square errors')
 axis image
 
