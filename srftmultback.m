@@ -8,11 +8,7 @@ function [R,M] = srftmultback(l,A)
 
 [m,~]=size(A);
 % Generate S
-S = zeros(l,m);
-for j = 1:l
-    sj=randi(m);
-    S(j,sj)=1;
-end
+S = randi(m,1,l);
 
 % Generate D
 d=zeros(1,m);

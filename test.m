@@ -6,7 +6,7 @@ err=zeros(100,1);
 sv=zeros(100,1);
 for i=1:100
     A=randn(m,n);
-    [U,S,V]=SRFT_svd(A,k,@srftmultback);
+    [U,S,V]=SRFT_svd(A,k);
     err(i)=norm(U*S*V'-A);
     s=svds(A,k+1);
     %sv(i)=((sqrt(k*(n-k)+1)+1)*sqrt(2*m+1)+sqrt(k*(n-k)+1)*sqrt(2*m))*s(k+1);
@@ -47,49 +47,50 @@ l=4*n;
 eps=1e-6;
 sol1=zeros(100,1);
 acc=zeros(100,1);
-sol2=zeros(100,1);
+% sol2=zeros(100,1);
 t1=zeros(100,1);
 t2=zeros(100,1);
 for i=1:100
     A=randn(m,n);
     b=randn(m,1);
     tic
-    x=SRFT_ls_over(A,b,eps,l,@conj_grad,@randH);
+    x=SRFT_ls_over(A,b,eps,l,@conj_grad);
     t1(i)=toc;
+%     tic
+%     y=SRFT_ls_overold(A,b,eps,l,@srftmult_ls,@conj_grad,@randH);
+%     t2(i)=toc;
     tic
-    y=SRFT_ls_overold(A,b,eps,l,@srftmult_ls,@conj_grad,@randH);
-    t2(i)=toc;
     p=A\b;
+    t2(i)=toc;
     sol1(i)=norm(A*x-b)-norm(A*p-b);
     acc(i)=eps*norm(A*p-b);
-    sol2(i)=norm(A*y-b)-norm(A*p-b);
+%     sol2(i)=norm(A*y-b)-norm(A*p-b);
 end
 plot(sol1,'r.')
 hold on
-plot(sol2,'b.')
-hold on
+% plot(sol2,'b.')
+% hold on
 plot(acc,'g.')
-legend('Error1','Error2','Bound','Location','east')
+legend('Error1','Bound','Location','east')
 mean(t1)
 mean(t2)
 
 %% Another large-scale overdetermined system
 clear
-m=1000;
-n=100;
+m=32768;
+n=512;
 l=n*4;
 eps=1e-6;
 A=randn(m,n);
 b=randn(m,1);
 tic
-x=SRFT_ls_over(A,b,eps,l,@conj_grad,@randH);
+x=SRFT_ls_over(A,b,eps,l,@conj_grad);
 toc
 tic
-y=SRFT_ls_overold(A,b,eps,l,@srftmult_ls,@conj_grad,@randH);
+p=A\b;
 toc
-% p=A\b;
 % norm(A*x-b)-norm(A*p-b)
-% norm(A*y-b)-norm(A*p-b)
+% eps*norm(A*p-b)
 
 %% Test one-pass SVD with Gaussian and SRFT
 m=150;
