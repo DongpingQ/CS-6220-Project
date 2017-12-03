@@ -42,3 +42,45 @@ t_rel=avg_ori/avg_ran;
 max_cond=max(condnum);
 max_iter=max(iternum);
 max_rel=max(epsrel);
+
+%% The underdetermined least squares system
+clear
+m=128;
+n=16384;
+l=m*4;
+U=randn(m,m)+1i*randn(m,m);
+U=orth(U);
+V=randn(n,m)+1i*randn(n,m);
+V=orth(V);
+d=10.^(-6*(0:(m-1))/(m-1));
+sigma=diag(d);
+A=U*sigma*V';
+
+randones=rand(1,m);
+randones(randones<0.5)=-1;
+randones(randones>=0.5)=1;
+p=sum(bsxfun(@times,V,randones),2)/sqrt(m);
+b=A*p;
+epsdenom=cond(A)*norm(p);
+
+t=zeros(1,10);
+t0=zeros(1,10);
+epsori=zeros(1,10);
+epsrel=zeros(1,10);
+for j=1:10
+    tic
+    x=SRFT_ls_under(A,b,l,@conj_grad,@SRFT_ls_over);
+    t(j)=toc;
+    epsrel(j)=norm(x-p)/epsdenom;
+    tic
+    [Q,R]=qr(A');
+    z=R(1:m,1:m)'\b;
+    p0=Q(:,1:m)*z;
+    t0(j)=toc;
+    epsori(j)=norm(p0-p)/epsdenom;
+end
+avg_ori=mean(t0);
+avg_ran=mean(t);
+t_rel=avg_ori/avg_ran;
+max_epsrel=max(epsrel);
+max_epsori=max(epsori);

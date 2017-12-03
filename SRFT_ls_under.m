@@ -1,4 +1,4 @@
-function x = SRFT_ls_under(A,b,eps,l,conj_grad,SRFT_ls_over)
+function x = SRFT_ls_under(A,b,l,conj_grad,SRFT_ls_over)
 % This algorithm solves underdetermined Least Squares Problem Ax=b with
 % A of size m by n and m < n by means of SRFT
 % Input: A: target matrix
@@ -51,6 +51,7 @@ end
 %     Y((n-j):(n-j+1),:)=givens*Y((n-j):(n-j+1),:);
 % end
 % Es=fft(bsxfun(@times,Y,D));
+
 Es=fft(bsxfun(@times,A',D));
 Es=Es(S,:);
 Es=Es/sqrt(n);
@@ -63,8 +64,7 @@ Es=Es/sqrt(n);
 t=R(1:m,1:m)'\b;
 z=Q(:,1:m)*t;
 
-c=fft(Sh*z);
-c=D.*c;
+c=conj(D).*ifft(Sh*z)*n;
 c=c/sqrt(n);
 
 % for j=1:n-1
@@ -72,14 +72,14 @@ c=c/sqrt(n);
 %     c(j:j+1,:)=givens*c(j:j+1,:);
 % end
 % c=c(iPi1,:);
-% c=Z1.*c;
+% c=conj(Z1).*c;
 % for j=1:n-1
 %     givens=[cos(th(n-j)) -sin(th(n-j));sin(th(n-j)) cos(th(n-j))];
 %     c(j:j+1,:)=givens*c(j:j+1,:);
 % end
 % c=c(iPi2,:);
-% c=Z2.*c;
+% c=conj(Z2).*c;
 
-[y,~,~]=SRFT_ls_over(A',c,eps^2*l/(4*n),l,conj_grad);
+[y,~,~]=SRFT_ls_over(A',c,(1e-14*cond(A))^2*m/n,l,conj_grad);
 x=A'*y;
 end
