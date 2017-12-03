@@ -1,4 +1,4 @@
-function x = SRFT_ls_under(A,b,eps,l,srftmult_ls,conj_grad,randH,SRFT_ls_over)
+function x = SRFT_ls_under(A,b,eps,l,conj_grad,SRFT_ls_over)
 % This algorithm solves underdetermined Least Squares Problem Ax=b with
 % A of size m by n and m < n by means of SRFT
 % Input: A: target matrix
@@ -17,45 +17,69 @@ function x = SRFT_ls_under(A,b,eps,l,srftmult_ls,conj_grad,randH,SRFT_ls_over)
 S=randi(n,1,l);
 D=2*pi*rand(n,1);
 D=cos(D)+1i*sin(D);
+
+Sh=zeros(n,l);
+for j=1:l
+    Sh(S(j),j)=1;
+end
+
 % Z1=2*pi*rand(n,1);
 % Z2=2*pi*rand(n,1);
 % Z1=cos(Z1)+1i*sin(Z1);
 % Z2=cos(Z2)+1i*sin(Z2);
 % Pi1=randperm(n);
 % Pi2=randperm(n);
+% [~,iPi1]=sort(Pi1);
+% [~,iPi2]=sort(Pi2);
 % 
 % Y=bsxfun(@times,A',Z2);
 % Y=Y(Pi2,:);
-% tic
+% 
+% th=zeros(1,n-1);
 % for j=1:n-1
-%     th=2*pi*rand;
-%     givens=[cos(th) sin(th);-sin(th) cos(th)];
+%     th(j)=2*pi*rand;
+%     givens=[cos(th(j)) sin(th(j));-sin(th(j)) cos(th(j))];
 %     Y(n-j:n-j+1,:)=givens*Y(n-j:n-j+1,:);
-%     z(n-j:n-j+1,:)=givens*z(n-j:n-j+1,:);
 % end
-% toc
+% 
 % Y=bsxfun(@times,Y,Z1);
 % Y=Y(Pi1,:);
+% tht=zeros(1,n-1);
 % for j=1:n-1
-%     th=2*pi*rand;
-%     givens=[cos(th) sin(th);-sin(th) cos(th)];
+%     tht(j)=2*pi*rand;
+%     givens=[cos(tht(j)) sin(tht(j));-sin(tht(j)) cos(tht(j))];
 %     Y((n-j):(n-j+1),:)=givens*Y((n-j):(n-j+1),:);
-%     z((n-j):(n-j+1),:)=givens*z((n-j):(n-j+1),:);
 % end
-% E=fft(bsxfun(@times,Y,D));
+% Es=fft(bsxfun(@times,Y,D));
 Es=fft(bsxfun(@times,A',D));
 Es=Es(S,:);
-Es=Es/sqrt(m);
-%T=srftmult_ls(l,H);
+Es=Es/sqrt(n);
+
+
 
 %%
 % Least squares problem algorithm
-%S=T*A';
 [Q,R]=qr(Es);
 t=R(1:m,1:m)'\b;
 z=Q(:,1:m)*t;
-%c=T'*z;
-c=(S*fft(D*H))'*z;
-y=SRFT_ls_over(A',c,eps^2*l/(4*n),l,srftmult_ls,conj_grad,randH);
+
+c=fft(Sh*z);
+c=D.*c;
+c=c/sqrt(n);
+
+% for j=1:n-1
+%     givens=[cos(tht(n-j)) -sin(tht(n-j));sin(tht(n-j)) cos(tht(n-j))];
+%     c(j:j+1,:)=givens*c(j:j+1,:);
+% end
+% c=c(iPi1,:);
+% c=Z1.*c;
+% for j=1:n-1
+%     givens=[cos(th(n-j)) -sin(th(n-j));sin(th(n-j)) cos(th(n-j))];
+%     c(j:j+1,:)=givens*c(j:j+1,:);
+% end
+% c=c(iPi2,:);
+% c=Z2.*c;
+
+[y,~,~]=SRFT_ls_over(A',c,eps^2*l/(4*n),l,conj_grad);
 x=A'*y;
 end

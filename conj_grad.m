@@ -1,4 +1,4 @@
-function soln = conj_grad(A,S,b,x,eps)
+function [soln,count] = conj_grad(A,S,b,x,eps)
 % This function computes the preconditioned conjugate gradient iterations
 % given general A, b, precondition matrix S, initial guess x and tolerance
 % eps, not a lot of iterations will be needed if the condition number of
@@ -9,11 +9,14 @@ function soln = conj_grad(A,S,b,x,eps)
 %        x: initial guess vector
 %        eps: tolerance
 % Output: soln: final solution after iterations
+%         count: number of iterations to reach the tolerance
 r=b-A*x;
 p=S'\(A'*r);
 s=p;
 gam=norm(s)^2;
+count=0;
 while gam>eps
+    count=count+1;
     t=S\p;
     q=A*t;
     alpha=gam/(norm(q)^2);
