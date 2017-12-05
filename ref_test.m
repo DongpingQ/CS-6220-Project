@@ -156,6 +156,39 @@ end
 mesh(t1-t2)
 figure
 mesh(relerr1,'edgecolor','b')
-alpha(0.5)
 hold on
 mesh(relerr2,'edgecolor','r')
+alpha(0.3)
+
+%% Second one-pass test case from reference
+n=1000;
+p=2;
+A=diag((1:n).^(-p));
+r=5;
+[u0,s0,v0]=svds(A,r);
+relden=norm(A-u0*s0*v0','fro');
+
+kupper=floor((r+log(n))*log(r));
+lupper=floor((kupper+log(n))*log(kupper));
+relerr1=zeros(kupper-r,lupper-r);
+relerr2=zeros(kupper-r,lupper-r);
+t1=zeros(kupper-r,lupper-r);
+t2=zeros(kupper-r,lupper-r);
+for k=r+1:kupper
+    for l=r+1:lupper
+        tic
+        [u1,s1,v1]=fixedrankapprox(A,r,k,l,'G',@lowrankapprox,@Gaussian_sketch,@SRFT_sketch);
+        t1(k-r,l-r)=toc;
+        relerr1(k-r,l-r)=norm(A-u1*s1*v1','fro')/relden-1;
+        tic
+        [u2,s2,v2]=fixedrankapprox(A,r,k,l,'S',@lowrankapprox,@Gaussian_sketch,@SRFT_sketch);
+        t2(k-r,l-r)=toc;
+        relerr2(k-r,l-r)=norm(A-u2*s2*v2','fro')/relden-1;
+    end
+end
+mesh(t1-t2)
+figure
+mesh(relerr1,'edgecolor','b')
+hold on
+mesh(relerr2,'edgecolor','r')
+alpha(0.3)
