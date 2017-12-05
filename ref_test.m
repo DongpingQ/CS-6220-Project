@@ -1,8 +1,8 @@
 % This test file tries to imitate the examples in the referenced papers
 %% The overdetermined least squares system
 clear
-m=65536;
-n=256;
+m=32768;
+n=64;
 l=n*4;
 U=randn(m,n+1)+1i*randn(m,n+1);
 U=orth(U);
@@ -26,7 +26,7 @@ iternum=zeros(1,10);
 epsrel=zeros(1,10);
 for j=1:10
     tic
-    [x,P,count]=SRFT_ls_over(A,b,0.5e-10,l,@conj_grad);
+    [x,P,count]=SRFT_ls_over(A,b,0.5e-14,l,@conj_grad);
     t(j)=toc;
     tic
     y=A\b;
@@ -45,8 +45,8 @@ max_rel=max(epsrel);
 
 %% The underdetermined least squares system
 clear
-m=128;
-n=16384;
+m=256;
+n=32768;
 l=m*4;
 U=randn(m,m)+1i*randn(m,m);
 U=orth(U);
@@ -84,3 +84,78 @@ avg_ran=mean(t);
 t_rel=avg_ori/avg_ran;
 max_epsrel=max(epsrel);
 max_epsori=max(epsori);
+
+%% The 3rd SRFT SVD test on reference
+clear
+m=1024;
+n=1024;
+k=504;
+l=k+8;
+sigma=10.^(-12*(0:l+1)'/(l+1));
+U=orth(randn(m,l+2)+1i*randn(m,l+2));
+V=orth(randn(n,l+2)+1i*randn(n,l+2));
+A=U*diag(sigma)*V';
+
+t0=zeros(1,10);
+t=zeros(1,10);
+deldir=zeros(1,10);
+delfas=zeros(1,10);
+
+for j=1:10
+    tic
+    [u1,s1,v1]=svds(A,k);
+    t0(j)=toc;
+    tic
+    [u2,s2,v2]=SRFT_svd(A,k);
+    t(j)=toc;
+    deldir(j)=norm(u1*s1*v1'-A);
+    delfas(j)=norm(u2*s2*v2'-A);
+end
+avg_ori=mean(t0);
+avg_alg=mean(t);
+t_rel=avg_ori/avg_alg;
+max_dir=max(deldir);
+max_fas=max(delfas);
+
+%% First One-pass SVD test from reference
+clear
+m=1000;
+n=1000;
+r=5;
+gamma=0.01;
+A=[eye(r) zeros(r,n-r);zeros(m-r,r) zeros(m-r,n-r)];
+G=zeros(m,n);
+for j=1:m
+    for k=1:n
+        ran=mvnrnd([0,0],eye(2));
+        G(j,k)=ran(1)+1i*ran(2);
+    end
+end
+A=A+sqrt(gamma*r/m/n)*G;
+[u0,s0,v0]=svds(A,r);
+relden=norm(A-u0*s0*v0','fro');
+
+kupper=floor((r+log(n))*log(r));
+lupper=floor((kupper+log(m))*log(kupper));
+relerr1=zeros(kupper-r,lupper-r);
+relerr2=zeros(kupper-r,lupper-r);
+t1=zeros(kupper-r,lupper-r);
+t2=zeros(kupper-r,lupper-r);
+for k=r+1:kupper
+    for l=r+1:lupper
+        tic
+        [u1,s1,v1]=fixedrankapprox(A,r,k,l,'G',@lowrankapprox,@Gaussian_sketch,@SRFT_sketch);
+        t1(k-r,l-r)=toc;
+        relerr1(k-r,l-r)=norm(A-u1*s1*v1','fro')/relden-1;
+        tic
+        [u2,s2,v2]=fixedrankapprox(A,r,k,l,'S',@lowrankapprox,@Gaussian_sketch,@SRFT_sketch);
+        t2(k-r,l-r)=toc;
+        relerr2(k-r,l-r)=norm(A-u2*s2*v2','fro')/relden-1;
+    end
+end
+mesh(t1-t2)
+figure
+mesh(relerr1,'edgecolor','b')
+alpha(0.5)
+hold on
+mesh(relerr2,'edgecolor','r')

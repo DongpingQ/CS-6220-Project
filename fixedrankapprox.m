@@ -1,4 +1,4 @@
-function [Q,sigma,V] = fixedrankapprox(A,r,k,l,method,lowrankapprox,Gaussian_sketch,SRFT_sketch,srftmultfront,srftmultback)
+function [Q,sigma,V] = fixedrankapprox(A,r,k,l,method,lowrankapprox,Gaussian_sketch,SRFT_sketch)
 % This function performs a one-pass SVD to matrix A
 % Input: A: target matrix
 %        r: specified lower rank r <= min(m,n)
@@ -9,7 +9,7 @@ function [Q,sigma,V] = fixedrankapprox(A,r,k,l,method,lowrankapprox,Gaussian_ske
 %        lowrankapprox, Gaussian_sketch, SRFT_sketch, srftmultfront, srftmultback: helper functions
 % Output: we approximate the SVD of A with Q*sigma*V'
 
-[Q,X] = lowrankapprox(A,k,l,method,Gaussian_sketch,SRFT_sketch,srftmultfront,srftmultback);
+[Q,X] = lowrankapprox(A,k,l,method,Gaussian_sketch,SRFT_sketch);
 [U,sigma,V]=svds(X,r);
 Q=Q*U;
 end

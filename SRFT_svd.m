@@ -19,19 +19,22 @@ Y=fft(bsxfun(@times,A,D));
 Y=Y(S,:);
 % [Qy,Ry,Py]=qr(Y);
 % Qy1=Qy(:,1:k);
-[~,Ry,Py]=qr(Y);
+
+[~,Ry,Py]=qr(Y,'vector');
+iden=eye(n);
+Perm=iden(Py,:);
 Ry1=Ry(1:k,:);
 Ry11=Ry1(:,1:k);
 Ry12=Ry1(:,k+1:n);
 
-P=[eye(k) Ry11\Ry12]*Py';
-B=A*Py(:,1:k);
+B=A(:,Py(1:k));
+P=Perm(1:k,:)+Ry11\(Ry12*Perm(k+1:n,:));
 
 %%
 % Construct the SVD of the matrix A = USV^{*}
-[Q,Rp]=qr(P');
+[Q,Rp]=qr(P',0);
 L=Rp';
 C=B*L;
-[U,S,W]=svd(C);
+[U,S,W]=svds(C,k);
 V=Q*W;
 % Then A = USV^{*}

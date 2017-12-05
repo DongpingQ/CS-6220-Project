@@ -1,4 +1,4 @@
-function [Q,X] = lowrankapprox(A,k,l,method,Gaussian_sketch,SRFT_sketch,srftmultfront,srftmultback)
+function [Q,X] = lowrankapprox(A,k,l,method,Gaussian_sketch,SRFT_sketch)
 % This function performs a one-pass low-rank approximation to A with
 % sketches of A
 % Input: A: target matrix
@@ -12,7 +12,7 @@ function [Q,X] = lowrankapprox(A,k,l,method,Gaussian_sketch,SRFT_sketch,srftmult
 if method == 'G'
     [Y,W,psi] = Gaussian_sketch(A,k,l);
 else
-    [Y,W,psi] = SRFT_sketch(A,k,l,srftmultfront,srftmultback);
+    [Y,W,psi] = SRFT_sketch(A,k,l);
 end
 
 [Q,~]=qr(Y,0);
