@@ -1,18 +1,39 @@
 clear all 
 format compact
 
-m = 10;    eps = 1.0e-1;    k = 5;    tol = eps;
+type = 1;
+m = 800;    eps = 1.0e-1;    k = 5;
 
-s = floor(m/eps^2);
-
-n = [400 800 1600 3200 6400];
+n = [10 20 40 80 160];
 
 for i = 1:length(n)
     
-    A = 10*rand(n(i),m);
-    b = 10*rand(n(i),1);  
+    if type == 1
+        s = floor(m/eps^2);
+        
+        A = 10*rand(n(i),m);
+        b = 10*rand(n(i),1);     
+    else
+        s = floor(m/eps^2);
+        
+        U = randn(m,m) + 1i*randn(m,m);
+        U = orth(U);
+        V = randn(n(i),m) + 1i*randn(n(i),m);
+        V = orth(V');
+        V = V';
+        d = 10.^(-6*(0:(m-1))/(m-1)^2);
+        sigma = diag(d);
+        A = 10*U*sigma*V';
+        
+        randones=rand(1,m);
+        randones(randones<0.5) = -1;
+        randones(randones>=0.5) = 1;
+        p = sum(bsxfun(@times,V,randones),2)/sqrt(m);
+        b = A*p;
+    end
+    
+    tol = 1.0e-2;
     x = lsqr(A, b, tol);
-%     A = kSVDMatrix(n(i), 4*m, 3*m, m);
     
     tic
     C = GaussianProjection(A, s);
@@ -33,16 +54,16 @@ end
 for i = 1:length(n)    I(i) = i;    end
 
 figure(1)
-plot(I*t1(1), t1, '-o', I*t1(1), t2, '-*','LineWidth',1.5)
-xlabel('scaled size n')
-ylabel('time')
+plot(I, log10(t1), '-o', I, log10(t2), '-*','LineWidth',1.5)
+% xlabel('grid: n = 2^{[6 7 8 9 10]}')
+ylabel('log(time)')
 legend('Gaussian','CountSketch')
 title('least square run time')
 axis image
 
 figure(2)
 plot(I, log10(nF1), I, log10(nF2), '-*','LineWidth',1.5)
-xlabel('size n')
+% xlabel('grid: n = 2^{[6 7 8 9 10]}')
 ylabel('log(error)')
 legend('Gaussian','CountSketch')
 title('least square errors')
