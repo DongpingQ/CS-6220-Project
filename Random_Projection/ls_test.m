@@ -1,7 +1,6 @@
 clear all 
 format compact
 
-% This is a test
 
 type = 1;
 m = 800;    eps = 1.0e-1;    k = 5;
